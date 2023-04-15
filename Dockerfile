@@ -21,7 +21,8 @@ FROM python:3.10-slim
 RUN apt-get update && apt-get install -y \
     wget \
     curl \
-    gnupg
+    gnupg \
+    gunicorn
 
 # chrome
 RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add && \
@@ -39,4 +40,6 @@ COPY main.py .
 
 ENV PATH /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/chrome
 
-ENTRYPOINT [ "python", "main.py" ]
+# ENTRYPOINT [ "python", "main.py" ]
+# ENTRYPOINT ["gunicorn","main:index"]
+CMD ["gunicorn", "-w", "2", "-b", "0.0.0.0","main:app"]
